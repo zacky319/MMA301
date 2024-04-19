@@ -1,11 +1,14 @@
-import watches from './db.json';
+import watchesData from './db.json';
 
-export const brands = watches
+export const brands = watchesData
   .map((watch) => {
     return { brandName: watch.brandName };
   })
   .filter((obj, index) => {
     return (
-      index === watches.findIndex((watch) => obj.brandName === watch.brandName)
+      index ===
+      watchesData.findIndex((watch) => obj.brandName === watch.brandName)
     );
   });
+
+export const watches = watchesData;

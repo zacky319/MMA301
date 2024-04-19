@@ -45,6 +45,6 @@ export default CarouselCards;
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    height: 180,
   },
 });
