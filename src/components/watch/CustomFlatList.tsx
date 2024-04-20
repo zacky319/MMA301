@@ -1,31 +1,13 @@
 import React from 'react';
 import { Animated, FlatListProps, View } from 'react-native';
-import { useFlatListHook } from '../hooks/useFlatListHook';
+import { useFlatListHook } from '../../hooks/useFlatListHook';
 
 type CustomFlatListProps<T> = Omit<FlatListProps<T>, 'ListHeaderComponent'> & {
-  /**
-   * An element that is above all
-   *
-   * Hides when scrolling
-   */
-  HeaderComponent: JSX.Element;
-  /**
-   * An element that is above the list but lower than {@link Props.HeaderComponent HeaderComponent} and has the property sticky
-   *
-   * When scrolling is fixed on top
-   */
+  HeaderComponent?: JSX.Element;
   StickyElementComponent: JSX.Element;
-  /**
-   * An element that is higher than the list but lower than {@link Props.HeaderComponent HeaderComponent} and {@link Props.StickyElementComponent StickyElementComponent}
-   *
-   * Hides when scrolling
-   */
   TopListElementComponent: JSX.Element;
 };
 
-/**
- *
- */
 function CustomFlatList<T>({
   style,
   ...props
@@ -40,22 +22,23 @@ function CustomFlatList<T>({
 
   return (
     <View style={style}>
-      <Animated.View // <-- Sticky Component
+      <Animated.View
         style={styles.stickyElement}
-        onLayout={onLayoutStickyElement}>
+        onLayout={onLayoutStickyElement}
+      >
         {props.StickyElementComponent}
       </Animated.View>
 
-      <Animated.View // <-- Top of List Component
+      <Animated.View
         style={styles.topElement}
-        onLayout={onLayoutTopListElement}>
+        onLayout={onLayoutTopListElement}
+      >
         {props.TopListElementComponent}
       </Animated.View>
 
       <Animated.FlatList<any>
         {...props}
         ListHeaderComponent={
-          // <-- Header Component
           <Animated.View onLayout={onLayoutHeaderElement}>
             {props.HeaderComponent}
           </Animated.View>

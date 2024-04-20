@@ -4,105 +4,80 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CarouselCards from './CarouselCards';
-import WatchList from './WatchList';
-import CustomFlatList from './CustomFlatList';
-import { watches } from '../data';
+import CustomFlatList from './watch/CustomFlatList';
+import { Watch, watches } from '../data';
 import SearchBar from './SearchBar';
-import FeatherIcon from 'react-native-vector-icons/Feather';
+import WatchCard from './watch/WatchCard';
+import {
+  getItem,
+  mergeItem,
+  removeItem,
+  setItem,
+} from '../utils/async-storage';
 
 const HomeScreen = ({ navigation }: { navigation: any }) => {
   const [clicked, setClicked] = useState(false);
   const [searchPhrase, setSearchPhrase] = useState('');
+  const [favoriteWatches, setFavoriteWatches] = useState<Watch[]>([]);
 
-  const renderItem = ({ item }: { item: any }) => {
+  const onPressWatchCard = (watchId: string) =>
+    navigation.navigate('Detail', {
+      watchId,
+      isFavorite: checkIsFavorite(watchId),
+    });
+
+  const onPressFavorite = async (item: Watch) => {
+    console.log('onPressFavorite', item.id, favoriteWatches.length);
+    if (favoriteWatches.findIndex((watch) => watch.id === item.id) !== -1)
+      return;
+
+    setFavoriteWatches([...favoriteWatches, item]);
+    await setItem('favorite', [...favoriteWatches, item]);
+  };
+
+  const onPressUnfavorite = async (item: Watch) => {
+    console.log('onPressUnfavorite', item.id);
+    if (favoriteWatches.findIndex((watch) => watch.id === item.id) === -1)
+      return;
+
+    setFavoriteWatches(favoriteWatches.filter((watch) => watch.id !== item.id));
+    await setItem('favorite', favoriteWatches);
+  };
+
+  const checkIsFavorite = (itemId: string) => {
+    return favoriteWatches.findIndex((watch) => watch.id === itemId) !== -1;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const data = await getItem('favorite');
+      console.log(data.length);
+      setFavoriteWatches(data);
+    })();
+  }, []);
+
+  const renderItem = ({ item }: { item: Watch }) => {
     return (
-      <TouchableOpacity
-        key={item.id}
-        onPress={() => {
-          // handle onPress
-        }}
-      >
-        <View style={styles.card}>
-          <View style={styles.cardTop}>
-            <Image
-              alt=""
-              resizeMode="cover"
-              style={styles.cardImg}
-              source={{ uri: item.image }}
-            />
-          </View>
-
-          <View style={styles.cardBody}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{item.watchName}</Text>
-
-              <Text style={styles.cardPrice}>
-                ${item.price.toLocaleString('en-US')}
-              </Text>
-            </View>
-
-            <View style={styles.cardStats}>
-              <View style={styles.cardStatsItem}>
-                <FeatherIcon color="#48496c" name="zap" size={14} />
-
-                <Text style={styles.cardStatsItemText}>{item.price} hp</Text>
-              </View>
-
-              <View style={styles.cardStatsItem}>
-                <FeatherIcon color="#48496c" name="navigation" size={14} />
-
-                <Text style={styles.cardStatsItemText}>
-                  {item.price.toLocaleString('en-US')} miles
-                </Text>
-              </View>
-
-              <View style={styles.cardStatsItem}>
-                <FeatherIcon color="#48496c" name="clock" size={14} />
-
-                <Text style={styles.cardStatsItemText}>{item.price} sec</Text>
-              </View>
-            </View>
-
-            <View style={styles.cardFooter}>
-              <Text style={styles.cardFooterText}>{item.price}</Text>
-
-              <Text style={styles.cardFooterText}>
-                {item.price}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <WatchCard
+        item={item}
+        isFavorite={checkIsFavorite(item.id)}
+        onPressWatchCard={onPressWatchCard}
+        onPressFavorite={onPressFavorite}
+        onPressUnfavorite={onPressUnfavorite}
+      />
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Pressable onPress={() => navigation.navigate('Menu')}>
-        <Text>View Menu</Text>
-      </Pressable> */}
-      {/* <View style={styles.brands}>
-        <Text>Brands: </Text>
-        <CarouselCards />
-      </View>
-      <View style={styles.watches}>
-        <Text>Watches: </Text>
-        <WatchList />
-      </View> */}
       <CustomFlatList
         data={watches}
         style={styles.list}
         renderItem={renderItem}
-        HeaderComponent={
-          <View style={styles.header}>
-            <Text>Header</Text>
-          </View>
-        }
         StickyElementComponent={
           <View style={styles.sticky}>
             <SearchBar
@@ -113,10 +88,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
             />
           </View>
         }
-        TopListElementComponent={
-          // <View style={styles.topList}><Text> Top List </Text></View>
-          <CarouselCards />
-        }
+        TopListElementComponent={<CarouselCards />}
       />
     </SafeAreaView>
   );
@@ -126,35 +98,10 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // padding: 50,
-  },
-  // header: {
-  //   flex: 1,
-  //   // height: '80%'
-  // },
-  brands: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    //flex: 10
-  },
-  watches: {
     // backgroundColor: '#fff',
     // alignItems: 'center',
     // justifyContent: 'center',
     // padding: 50,
-    // flex: 1
-  },
-  header: {
-    borderColor: 'red',
-    borderWidth: 5,
-    height: 100,
-    marginBottom: 6,
-    width: '100%',
   },
   item: {
     borderColor: 'green',
@@ -167,11 +114,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   sticky: {
-    // backgroundColor: '#2555FF50',
-    // borderColor: 'blue',
-    // borderWidth: 5,
+    backgroundColor: 'white',
     height: 80,
-    marginBottom: 6,
+    //marginBottom: 6,
     width: '100%',
   },
   topList: {
@@ -225,6 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: '600',
     color: '#2d2d2d',
+    width: '80%',
   },
   cardPrice: {
     fontSize: 20,
