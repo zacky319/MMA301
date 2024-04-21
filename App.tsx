@@ -5,16 +5,16 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome6, MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import HomeScreen from './src/components/HomeScreen';
 import FavoriteScreen from './src/components/FavoriteScreen';
 import WatchDetail from './src/components/watch/WatchDetail';
 
 type RootStackParamList = {
-  Root: undefined;
+  Home: undefined;
   Detail: { watchId: string };
-  FavoriteStack: undefined;
+  Favorite: undefined;
 };
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +24,7 @@ function HomeStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Root"
+        name="HomeScreen"
         component={HomeScreen}
         options={{
           headerShown: false,
@@ -39,7 +39,7 @@ function FavoriteStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Favorite"
+        name="FavoriteScreen"
         component={FavoriteScreen}
         options={{
           headerShown: false,
@@ -54,14 +54,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Root"
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName: any;
-            if (route.name === 'Root') {
-              iconName = focused ? 'home' : 'home-outline';
-              return <Ionicons name={iconName} size={size} color={color} />;
-            } else if (route.name === 'FavoriteStack') {
+            if (route.name === 'Home') {
+              if (focused)
+                return <FontAwesome6 name="house" size={24} color="black" />;
+              else return <Octicons name="home" size={24} color="black" />;
+            } else if (route.name === 'Favorite') {
               iconName = focused ? 'favorite' : 'favorite-outline';
               return (
                 <MaterialIcons name={iconName} size={size} color={color} />
@@ -73,7 +74,7 @@ export default function App() {
         })}
       >
         <Tab.Screen
-          name="Root"
+          name="Home"
           component={HomeStack}
           options={({ route }) => ({
             tabBarStyle: ((route) => {
@@ -93,7 +94,7 @@ export default function App() {
           })}
         />
         <Tab.Screen
-          name="FavoriteStack"
+          name="Favorite"
           component={FavoriteStack}
           options={({ route }) => ({
             headerShown: ((route) => {
@@ -110,14 +111,4 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    backgroundColor: '#FBDABB',
-  },
-});
+const styles = StyleSheet.create({});

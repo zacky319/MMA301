@@ -8,12 +8,12 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import { Watch } from '../data';
 import { Rating } from 'react-native-elements';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { getItem, setItem } from '../utils/async-storage';
-import { MaterialIcons } from '@expo/vector-icons';
 import { CheckBox } from 'react-native-elements';
+
+import { Watch } from '../data';
+import { getItem, setItem } from '../utils/asyncStorage';
 import { HeaderSection } from './HomeScreen';
 
 type ItemProps = {
@@ -157,7 +157,6 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     >
       <HeaderSection />
       <Text style={styles.title}>
-        <MaterialIcons name="favorite-outline" size={24} color="black" />
         <Text> Favorite ({favoriteWatches.length})</Text>
       </Text>
       {favoriteWatches.length > 0 && (

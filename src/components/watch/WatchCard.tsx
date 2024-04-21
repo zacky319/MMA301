@@ -1,9 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
 import { Rating } from 'react-native-elements';
-import { Watch } from '../../data';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { MaterialIcons } from '@expo/vector-icons';
+
+import { Watch } from '../../data';
 
 const WatchCard = ({
   item,

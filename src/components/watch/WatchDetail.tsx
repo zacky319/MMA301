@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Watch, getWatchDetail } from '../../data';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { Rating } from 'react-native-elements';
 import { EvilIcons, MaterialIcons } from '@expo/vector-icons';
-import { getItem, setItem } from '../../utils/async-storage';
+
+import { getItem, setItem } from '../../utils/asyncStorage';
+import { Watch, getWatchDetail } from '../../data';
 
 const WatchDetail = ({
   route,

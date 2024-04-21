@@ -1,13 +1,14 @@
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { Text } from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+
 import CarouselCards from './CarouselCards';
 import CustomFlatList from './watch/CustomFlatList';
 import { Watch, watches } from '../data';
 import SearchBar from './SearchBar';
 import WatchCard from './watch/WatchCard';
-import { getItem, setItem } from '../utils/async-storage';
-import { Text } from 'react-native';
-import FeatherIcon from 'react-native-vector-icons/Feather';
+import { getItem, setItem } from '../utils/asyncStorage';
 
 export const HeaderSection = () => (
   <View style={styles.actionWrapper}>
@@ -218,7 +219,6 @@ const styles = StyleSheet.create({
   sticky: {
     backgroundColor: 'white',
     height: 80,
-    //marginBottom: 6,
     width: '100%',
   },
   topList: {
@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#222',
     marginLeft: 10,
+    marginTop: 10,
   },
   /** Card */
   card: {

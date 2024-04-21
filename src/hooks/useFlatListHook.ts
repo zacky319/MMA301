@@ -38,7 +38,6 @@ export const useFlatListHook = (): TUseCustomFlatListHook => {
     stickyElement: {
       left: 0,
       marginTop: heights.header,
-      //paddingTop: 40,
       position: "absolute",
       right: 0,
       transform: [

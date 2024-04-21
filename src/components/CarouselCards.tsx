@@ -4,9 +4,10 @@ import Carousel, {
   Pagination,
   ParallaxImage,
 } from 'react-native-snap-carousel';
-import { brands } from '../data';
 import { Dimensions } from 'react-native';
 import { Platform, Text } from 'react-native';
+
+import { brands } from '../data';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+    marginBottom: Platform.select({ ios: 0, android: 1 }),
     backgroundColor: 'white',
     borderRadius: 10,
   },
