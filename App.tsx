@@ -12,9 +12,9 @@ import FavoriteScreen from './src/components/FavoriteScreen';
 import WatchDetail from './src/components/watch/WatchDetail';
 
 type RootStackParamList = {
-  Home: undefined;
+  Root: undefined;
   Detail: { watchId: string };
-  Favorite: undefined;
+  FavoriteStack: undefined;
 };
 
 const Stack = createNativeStackNavigator();
@@ -24,8 +24,23 @@ function HomeStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name="Root"
         component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen name="Detail" component={WatchDetail} />
+    </Stack.Navigator>
+  );
+}
+
+function FavoriteStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Favorite"
+        component={FavoriteScreen}
         options={{
           headerShown: false,
         }}
@@ -39,15 +54,14 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName="Root"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName: any;
-
-            if (route.name === 'Home') {
+            if (route.name === 'Root') {
               iconName = focused ? 'home' : 'home-outline';
               return <Ionicons name={iconName} size={size} color={color} />;
-            } else if (route.name === 'Favorite') {
+            } else if (route.name === 'FavoriteStack') {
               iconName = focused ? 'favorite' : 'favorite-outline';
               return (
                 <MaterialIcons name={iconName} size={size} color={color} />
@@ -59,7 +73,7 @@ export default function App() {
         })}
       >
         <Tab.Screen
-          name="Home"
+          name="Root"
           component={HomeStack}
           options={({ route }) => ({
             tabBarStyle: ((route) => {
@@ -74,11 +88,23 @@ export default function App() {
               if (routeName === 'Detail') {
                 return false;
               }
-              return;
+              return false;
             })(route),
           })}
         />
-        <Tab.Screen name="Favorite" component={FavoriteScreen} />
+        <Tab.Screen
+          name="FavoriteStack"
+          component={FavoriteStack}
+          options={({ route }) => ({
+            headerShown: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route);
+              if (routeName === 'Detail') {
+                return false;
+              }
+              return false;
+            })(route),
+          })}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

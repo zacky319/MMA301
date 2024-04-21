@@ -24,8 +24,9 @@ const WatchCard = ({
       onPress={() => {
         onPressWatchCard(item.id);
       }}
+      style={styles.card}
     >
-      <View style={styles.card}>
+      <View>
         <View style={styles.cardTop}>
           <Image
             alt={item.watchName}
@@ -92,6 +93,10 @@ export default WatchCard;
 const styles = StyleSheet.create({
   /** Card */
   card: {
+    width: '95%',
+    alignSelf: 'center',
+    borderColor: '#fff',
+    borderWidth: 2,
     borderRadius: 12,
     backgroundColor: 'white',
     marginBottom: 24,
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
   },
   cardImg: {
     width: '100%',
-    height: 180,
+    height: 130,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
   },

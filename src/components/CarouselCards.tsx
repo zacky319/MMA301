@@ -10,7 +10,7 @@ import { Platform, Text } from 'react-native';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const CarouselCards = () => {
+const CarouselCards = ({ setSelectedBrand }: { setSelectedBrand: any }) => {
   const isCarousel = React.useRef(null);
   const [index, setIndex] = React.useState(0);
 
@@ -46,7 +46,10 @@ const CarouselCards = () => {
         renderItem={_renderItem}
         hasParallaxImages={true}
         vertical={false}
-        onSnapToItem={(index) => setIndex(index)}
+        onSnapToItem={(index) => {
+          setSelectedBrand(brands[index].brandName);
+          setIndex(index);
+        }}
       />
       <Pagination
         dotsLength={brands.length}

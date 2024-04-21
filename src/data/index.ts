@@ -17,7 +17,7 @@ export type Watch = {
   rating: number;
 };
 
-export const brands = watchesData
+const brandData = watchesData
   .map((watch) => {
     return { brandName: watch.brandName };
   })
@@ -27,6 +27,7 @@ export const brands = watchesData
       watchesData.findIndex((watch) => obj.brandName === watch.brandName)
     );
   });
+export const brands = [{ brandName: 'All' }, ...brandData];
 
 export const watches: Watch[] = watchesData
   .map((watch) => {
@@ -41,7 +42,7 @@ export const watches: Watch[] = watchesData
   .sort((a, b) => b.rating - a.rating);
 
 export const getWatchDetail = (watchId: string) => {
-  const watch = watches.find((watch) => watch.id === watchId);
+  const watch = watches.find((watch) => watch.id === watchId) as Watch;
   if (watch?.feedbacks?.length)
     watch.feedbacks = watch?.feedbacks?.sort((a, b) => b.rating - a.rating);
   return watch;

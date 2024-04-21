@@ -6,11 +6,12 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
-import { getWatchDetail } from '../../data';
+import React, { useEffect, useState } from 'react';
+import { Watch, getWatchDetail } from '../../data';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { Rating } from 'react-native-elements';
-import { EvilIcons } from '@expo/vector-icons';
+import { EvilIcons, MaterialIcons } from '@expo/vector-icons';
+import { getItem, setItem } from '../../utils/async-storage';
 
 const WatchDetail = ({
   route,
@@ -19,8 +20,59 @@ const WatchDetail = ({
   route: any;
   navigation: any;
 }) => {
+  const [favoriteWatches, setFavoriteWatches] = useState<Watch[]>([]);
+  const [isFavorite, setIsFavorite] = useState(false);
   const { watchId } = route.params;
   const watch = getWatchDetail(watchId);
+
+  const onPressFavorite = async (item: Watch) => {
+    console.log('onPressFavorite', item.id, favoriteWatches.length);
+    if (favoriteWatches.findIndex((watch) => watch.id === item.id) !== -1)
+      return;
+
+    setFavoriteWatches([...favoriteWatches, item]);
+    await setItem('favorite', [...favoriteWatches, item]);
+  };
+
+  const onPressUnfavorite = async (item: Watch) => {
+    console.log('onPressUnfavorite', item.id);
+    if (favoriteWatches.findIndex((watch) => watch.id === item.id) === -1)
+      return;
+
+    const updatedFavoriteWatches = favoriteWatches.filter(
+      (watch) => watch.id !== item.id
+    );
+    setFavoriteWatches(updatedFavoriteWatches);
+    await setItem('favorite', updatedFavoriteWatches);
+  };
+
+  const checkIsFavorite = (itemId: string) => {
+    return favoriteWatches.findIndex((watch) => watch.id === itemId) !== -1;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const data = await getItem('favorite');
+      setFavoriteWatches(data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      setIsFavorite(checkIsFavorite(watchId));
+    })();
+  }, [setFavoriteWatches, favoriteWatches]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      const data = await getItem('favorite');
+      console.log('Focus on Detail', data.length);
+      setFavoriteWatches(data);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <ScrollView style={styles.container}>
@@ -29,6 +81,19 @@ const WatchDetail = ({
         resizeMode="contain"
         source={{ uri: watch?.image }}
       />
+      <TouchableOpacity
+        style={styles.favoriteIcon}
+        key={watch?.id}
+        onPress={() => {
+          isFavorite ? onPressUnfavorite(watch) : onPressFavorite(watch);
+        }}
+      >
+        <MaterialIcons
+          name={isFavorite ? 'favorite' : 'favorite-outline'}
+          size={35}
+          color="pink"
+        />
+      </TouchableOpacity>
       <View style={styles.info}>
         <Text style={styles.name}>{watch?.watchName}</Text>
         <View style={styles.cardStats}>
@@ -64,7 +129,9 @@ const WatchDetail = ({
         </View>
         <Text style={styles.about}>About</Text>
         <Text style={styles.description}>{watch?.description}</Text>
-        <Text style={styles.feedbacks}>Reviews ({watch?.feedbacks?.length ?? 0})</Text>
+        <Text style={styles.feedbacks}>
+          Reviews ({watch?.feedbacks?.length ?? 0})
+        </Text>
         <ScrollView contentContainerStyle={styles.container}>
           {watch?.feedbacks?.map(({ rating, comment, author, date }, index) => {
             return (
@@ -264,5 +331,21 @@ const styles = StyleSheet.create({
   },
   feedbackCardAction: {
     marginLeft: 'auto',
+  },
+  favoriteIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    padding: 10,
+    top: 10,
+    end: 10,
+    backgroundColor: '#f0f8ff',
+    borderRadius: 30,
+    shadowColor: '#171717',
+    shadowOffset: {
+      width: -2,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });

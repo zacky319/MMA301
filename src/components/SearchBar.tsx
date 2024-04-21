@@ -1,53 +1,48 @@
-import React from "react";
-import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
-import { Feather, Entypo } from "@expo/vector-icons";
+import React from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
-const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
+const SearchBar = ({
+  searchPhrase,
+  setSearchPhrase,
+  onSubmitSearch,
+}: {
+  searchPhrase: string;
+  setSearchPhrase: any;
+  onSubmitSearch: (search: string) => any;
+}) => {
   return (
-    <View style={styles.container}>
-      <View
-        style={
-          clicked
-            ? styles.searchBar__clicked
-            : styles.searchBar__unclicked
-        }
-      >
-        {/* search Icon */}
-        <Feather
-          name="search"
-          size={20}
-          color="black"
-          style={{ marginLeft: 1 }}
-        />
-        {/* Input field */}
-        <TextInput
-          style={styles.input}
-          placeholder="Search"
-          value={searchPhrase}
-          onChangeText={setSearchPhrase}
-          onFocus={() => {
-            setClicked(true);
-          }}
-        />
-        {/* cross Icon, depending on whether the search bar is clicked or not */}
-        {clicked && (
-          <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-              setSearchPhrase("")
-          }}/>
-        )}
-      </View>
-      {/* cancel button, depending on whether the search bar is clicked or not */}
-      {clicked && (
-        <View>
-          <Button
-            title="Cancel"
-            onPress={() => {
-              Keyboard.dismiss();
-              setClicked(false);
-            }}
-          ></Button>
+    <View style={styles.search}>
+      <View style={styles.searchInput}>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            placeholder="Enter watch name"
+            placeholderTextColor="#9eadba"
+            value={searchPhrase}
+            onChangeText={setSearchPhrase}
+            style={styles.input}
+          />
+
+          <View style={styles.inputIcon}>
+            <FeatherIcon color="#9eadba" name="box" size={16} />
+          </View>
         </View>
-      )}
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          onSubmitSearch(searchPhrase)
+        }}
+      >
+        <View style={styles.btn}>
+          <Text style={styles.btnText}>Search</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -55,34 +50,59 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
 export default SearchBar;
 
 const styles = StyleSheet.create({
-    container: {
-      margin: 15,
-      justifyContent: "flex-start",
-      alignItems: "center",
-      flexDirection: "row",
-      width: "90%",
-  
-    },
-    searchBar__unclicked: {
-      padding: 10,
-      flexDirection: "row",
-      width: "95%",
-      backgroundColor: "#d9dbda",
-      borderRadius: 15,
-      alignItems: "center",
-    },
-    searchBar__clicked: {
-      padding: 10,
-      flexDirection: "row",
-      width: "80%",
-      backgroundColor: "#d9dbda",
-      borderRadius: 15,
-      alignItems: "center",
-      justifyContent: "space-evenly",
-    },
-    input: {
-      fontSize: 20,
-      marginLeft: 10,
-      width: "90%",
-    },
-  });
+  search: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  searchInput: {
+    flexGrow: 5,
+    flexShrink: 1,
+    flexBasis: 0,
+    marginRight: 12,
+  },
+  /** Input */
+  input: {
+    height: 50,
+    backgroundColor: '#f0f6fb',
+    paddingLeft: 50,
+    paddingRight: 24,
+    borderRadius: 12,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#222',
+  },
+  inputWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  inputIcon: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    top: 0,
+    left: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  /** Button */
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    backgroundColor: '#222',
+    borderColor: '#222',
+  },
+  btnText: {
+    fontSize: 15,
+    lineHeight: 24,
+    fontWeight: '600',
+    color: '#fff',
+  },
+});
