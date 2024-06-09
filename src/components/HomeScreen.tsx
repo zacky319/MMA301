@@ -4,10 +4,10 @@ import { Text } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CarouselCards from './CarouselCards';
-import CustomFlatList from './watch/CustomFlatList';
-import { Watch, watches } from '../data';
+import CustomFlatList from './perfume/CustomFlatList';
+import { Perfume, perfumes } from '../data';
 import SearchBar from './SearchBar';
-import WatchCard from './watch/WatchCard';
+import PerfumeCard from './perfume/PerfumeCard'
 import { getItem, setItem } from '../utils/asyncStorage';
 
 export const HeaderSection = () => (
@@ -48,57 +48,57 @@ export const HeaderSection = () => (
 const HomeScreen = ({ navigation }: { navigation: any }) => {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [favoriteWatches, setFavoriteWatches] = useState<Watch[]>([]);
-  const [watchList, setWatchList] = useState<Watch[]>([]);
+  const [favoritePerfumees, setFavoritePerfumees] = useState<Perfume[]>([]);
+  const [perfumeList, setPerfumeList] = useState<Perfume[]>([]);
 
-  const onPressWatchCard = (watchId: string) =>
+  const onPressPerfumeCard = (perfumeId: string) =>
     navigation.push('Detail', {
-      watchId,
+      perfumeId,
     });
 
-  const onPressFavorite = async (item: Watch) => {
-    console.log('onPressFavorite', item.id, favoriteWatches.length);
-    if (favoriteWatches.findIndex((watch) => watch.id === item.id) !== -1)
+  const onPressFavorite = async (item: Perfume) => {
+    console.log('onPressFavorite', item.id, favoritePerfumees.length);
+    if (favoritePerfumees.findIndex((perfume) => perfume.id === item.id) !== -1)
       return;
 
-    setFavoriteWatches([...favoriteWatches, item]);
-    await setItem('favorite', [...favoriteWatches, item]);
+    setFavoritePerfumees([...favoritePerfumees, item]);
+    await setItem('favorite', [...favoritePerfumees, item]);
   };
 
-  const onPressUnfavorite = async (item: Watch) => {
+  const onPressUnfavorite = async (item: Perfume) => {
     console.log('onPressUnfavorite', item.id);
-    if (favoriteWatches.findIndex((watch) => watch.id === item.id) === -1)
+    if (favoritePerfumees.findIndex((perfume) => perfume.id === item.id) === -1)
       return;
 
-    const updatedFavoriteWatches = favoriteWatches.filter(
-      (watch) => watch.id !== item.id
+    const updatedFavoritePerfumees = favoritePerfumees.filter(
+      (perfume) => perfume.id !== item.id
     );
-    setFavoriteWatches(updatedFavoriteWatches);
-    await setItem('favorite', updatedFavoriteWatches);
+    setFavoritePerfumees(updatedFavoritePerfumees);
+    await setItem('favorite', updatedFavoritePerfumees);
   };
 
   const onSubmitSearch = async (search: string) => {
     console.log('onSubmitSearch', search);
     const searchKey = search.trim().toLocaleLowerCase();
     if (searchKey === '') {
-      if (selectedBrand === 'All') setWatchList(watches);
+      if (selectedBrand === 'All') setPerfumeList(perfumes);
       else
-        setWatchList(
-          watches.filter((watch) => watch.brandName === selectedBrand)
+        setPerfumeList(
+          perfumes.filter((perfume) => perfume.brandName === selectedBrand)
         );
     } else {
       if (selectedBrand === 'All')
-        setWatchList(
-          watches.filter((watch) =>
-            watch.watchName.toLocaleLowerCase().includes(searchKey)
+        setPerfumeList(
+          perfumes.filter((perfume) =>
+            perfume.perfumeName.toLocaleLowerCase().includes(searchKey)
           )
         );
       else
-        setWatchList(
-          watches.filter(
-            (watch) =>
-              watch.watchName.toLocaleLowerCase().includes(searchKey) &&
-              watch.brandName === selectedBrand
+        setPerfumeList(
+          perfumes.filter(
+            (perfume) =>
+              perfume.perfumeName.toLocaleLowerCase().includes(searchKey) &&
+              perfume.brandName === selectedBrand
           )
         );
     }
@@ -108,24 +108,24 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
     (async () => {
       const searchKey = searchPhrase.trim().toLocaleLowerCase();
       if (searchKey === '') {
-        if (selectedBrand === 'All') setWatchList(watches);
+        if (selectedBrand === 'All') setPerfumeList(perfumes);
         else
-          setWatchList(
-            watches.filter((watch) => watch.brandName === selectedBrand)
+          setPerfumeList(
+            perfumes.filter((perfume) => perfume.brandName === selectedBrand)
           );
       } else {
         if (selectedBrand === 'All')
-          setWatchList(
-            watches.filter((watch) =>
-              watch.watchName.toLocaleLowerCase().includes(searchKey)
+          setPerfumeList(
+            perfumes.filter((perfume) =>
+              perfume.perfumeName.toLocaleLowerCase().includes(searchKey)
             )
           );
         else
-          setWatchList(
-            watches.filter(
-              (watch) =>
-                watch.watchName.toLocaleLowerCase().includes(searchKey) &&
-                watch.brandName === selectedBrand
+          setPerfumeList(
+            perfumes.filter(
+              (perfume) =>
+                perfume.perfumeName.toLocaleLowerCase().includes(searchKey) &&
+                perfume.brandName === selectedBrand
             )
           );
       }
@@ -133,15 +133,15 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   }, [selectedBrand]);
 
   const checkIsFavorite = (itemId: string) => {
-    return favoriteWatches.findIndex((watch) => watch.id === itemId) !== -1;
+    return favoritePerfumees.findIndex((perfume) => perfume.id === itemId) !== -1;
   };
 
   useEffect(() => {
     (async () => {
       const data = await getItem('favorite');
       console.log(data.length);
-      setFavoriteWatches(data);
-      setWatchList(watches);
+      setFavoritePerfumees(data);
+      setPerfumeList(perfumes);
     })();
   }, []);
 
@@ -149,18 +149,18 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const data = await getItem('favorite');
       console.log('Focus on Home', data.length);
-      setFavoriteWatches(data);
+      setFavoritePerfumees(data);
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  const renderItem = ({ item }: { item: Watch }) => {
+  const renderItem = ({ item }: { item: Perfume }) => {
     return (
-      <WatchCard
+      <PerfumeCard
         item={item}
         isFavorite={checkIsFavorite(item.id)}
-        onPressWatchCard={onPressWatchCard}
+        onPressPerfumeCard={onPressPerfumeCard}
         onPressFavorite={onPressFavorite}
         onPressUnfavorite={onPressUnfavorite}
       />
@@ -170,7 +170,7 @@ const HomeScreen = ({ navigation }: { navigation: any }) => {
   return (
     <SafeAreaView style={styles.container}>
       <CustomFlatList
-        data={watchList}
+        data={perfumeList}
         style={styles.list}
         renderItem={renderItem}
         StickyElementComponent={

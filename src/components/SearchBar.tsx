@@ -22,7 +22,7 @@ const SearchBar = ({
       <View style={styles.searchInput}>
         <View style={styles.inputWrapper}>
           <TextInput
-            placeholder="Enter watch name"
+            placeholder="Enter perfume name"
             placeholderTextColor="#9eadba"
             value={searchPhrase}
             onChangeText={setSearchPhrase}

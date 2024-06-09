@@ -12,21 +12,21 @@ import { Rating } from 'react-native-elements';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { CheckBox } from 'react-native-elements';
 
-import { Watch } from '../data';
+import { Perfume } from '../data';
 import { getItem, setItem } from '../utils/asyncStorage';
 import { HeaderSection } from './HomeScreen';
 
 type ItemProps = {
-  item: Watch;
+  item: Perfume;
   isActive: boolean;
-  onPressWatchCard: (index: string) => any;
+  onPressPerfumeCard: (index: string) => any;
   onPressCheckbox: (index: string) => any;
 };
 
 const Item = ({
   item,
   isActive,
-  onPressWatchCard,
+  onPressPerfumeCard,
   onPressCheckbox,
 }: ItemProps) => {
   return (
@@ -37,13 +37,13 @@ const Item = ({
       <TouchableOpacity
         key={item.id}
         onPress={() => {
-          onPressWatchCard(item.id);
+          onPressPerfumeCard(item.id);
         }}
         style={[styles.card]}
       >
         <View style={styles.cardTop}>
           <Image
-            alt={item.watchName}
+            alt={item.perfumeName}
             resizeMode="contain"
             style={styles.cardImg}
             source={{ uri: item.image }}
@@ -52,7 +52,7 @@ const Item = ({
 
         <View style={styles.cardBody}>
           <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>{item.watchName}</Text>
+            <Text style={styles.cardTitle}>{item.perfumeName}</Text>
             <Text style={styles.cardPrice}>
               ${item.price.toLocaleString('en-US')}
             </Text>
@@ -60,10 +60,10 @@ const Item = ({
 
           <View style={styles.cardStats}>
             <View style={styles.cardStatsItem}>
-              <FeatherIcon color="#48496c" name="watch" size={14} />
+              <FeatherIcon color="#48496c" name="feather" size={14} />
               <Text style={styles.cardStatsItemText}>{item.brandName}</Text>
             </View>
-            {item.automatic && (
+            {item.isForFemale && (
               <View style={styles.cardStatsItem}>
                 <FeatherIcon color="#48496c" name="zap" size={14} />
                 <Text style={styles.cardStatsItemText}>Automatic</Text>
@@ -88,37 +88,37 @@ const Item = ({
 };
 
 export default function FavoriteScreen({ navigation }: { navigation: any }) {
-  const [favoriteWatches, setFavoriteWatches] = useState<Watch[]>([]);
-  const [selectedWatchIds, setSelectedWatchIds] = useState<string[]>([]);
+  const [favoritePerfumes, setFavoritePerfumes] = useState<Perfume[]>([]);
+  const [selectedPerfumeIds, setSelectedPerfumeIds] = useState<string[]>([]);
 
   const checkIsActive = (itemId: string) => {
-    return selectedWatchIds.findIndex((watchId) => watchId === itemId) !== -1;
+    return selectedPerfumeIds.findIndex((perfumeId) => perfumeId === itemId) !== -1;
   };
 
-  const onPressWatchCard = (watchId: string) =>
+  const onPressPerfumeCard = (perfumeId: string) =>
     navigation.navigate('Detail', {
-      watchId,
+      perfumeId,
     });
 
   const onPressDelete = async () => {
     console.log('Click Delete button');
 
-    const updatedFavoriteWatches = favoriteWatches.filter(
-      (watch) => !selectedWatchIds.includes(watch.id)
+    const updatedFavoritePerfumes = favoritePerfumes.filter(
+      (perfume) => !selectedPerfumeIds.includes(perfume.id)
     );
-    setFavoriteWatches(updatedFavoriteWatches);
-    setSelectedWatchIds([]);
-    await setItem('favorite', updatedFavoriteWatches);
+    setFavoritePerfumes(updatedFavoritePerfumes);
+    setSelectedPerfumeIds([]);
+    await setItem('favorite', updatedFavoritePerfumes);
   };
 
   const onPressCheckbox = (itemId: string) => {
     console.log('Click Favorite card', itemId);
-    if (selectedWatchIds.includes(itemId)) {
-      setSelectedWatchIds(
-        selectedWatchIds.filter((watchId) => watchId !== itemId)
+    if (selectedPerfumeIds.includes(itemId)) {
+      setSelectedPerfumeIds(
+        selectedPerfumeIds.filter((perfumeId) => perfumeId !== itemId)
       );
     } else {
-      setSelectedWatchIds([...selectedWatchIds, itemId]);
+      setSelectedPerfumeIds([...selectedPerfumeIds, itemId]);
     }
   };
 
@@ -126,16 +126,16 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     (async () => {
       const data = await getItem('favorite');
       console.log(data.length);
-      setFavoriteWatches(data);
+      setFavoritePerfumes(data);
     })();
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
-      setSelectedWatchIds([]);
+      setSelectedPerfumeIds([]);
       const data = await getItem('favorite');
       console.log('Focus on Favorite', data.length);
-      setFavoriteWatches(data);
+      setFavoritePerfumes(data);
     });
 
     return unsubscribe;
@@ -145,7 +145,7 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     return (
       <View style={{ flex: 1 }}>
         <Text style={styles.titleStyle}>
-          Oops! There's no favorite watch here!
+          Oops! There's no favorite perfume here!
         </Text>
       </View>
     );
@@ -157,15 +157,15 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     >
       <HeaderSection />
       <Text style={styles.title}>
-        <Text> Favorite ({favoriteWatches.length})</Text>
+        <Text> Favorite ({favoritePerfumes.length})</Text>
       </Text>
-      {favoriteWatches.length > 0 && (
+      {favoritePerfumes.length > 0 && (
         <View style={styles.search}>
           <Text style={styles.searchInput}>
-            {selectedWatchIds.length} selected
+            {selectedPerfumeIds.length} selected
           </Text>
 
-          {selectedWatchIds.length > 0 && (
+          {selectedPerfumeIds.length > 0 && (
             <TouchableOpacity onPress={onPressDelete}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Delete</Text>
@@ -176,12 +176,12 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
       )}
       <FlatList
         style={styles.container}
-        data={favoriteWatches}
+        data={favoritePerfumes}
         renderItem={({ item, index }) => (
           <Item
             item={item}
             isActive={checkIsActive(item.id)}
-            onPressWatchCard={onPressWatchCard}
+            onPressPerfumeCard={onPressPerfumeCard}
             onPressCheckbox={onPressCheckbox}
           />
         )}

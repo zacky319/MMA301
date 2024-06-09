@@ -9,7 +9,7 @@ import { FontAwesome6, MaterialIcons, Octicons } from '@expo/vector-icons';
 
 import HomeScreen from './src/components/HomeScreen';
 import FavoriteScreen from './src/components/FavoriteScreen';
-import WatchDetail from './src/components/watch/WatchDetail';
+import WatchDetail from './src/components/perfume/PerfumeDetail';
 
 type RootStackParamList = {
   Home: undefined;

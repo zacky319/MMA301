@@ -23,19 +23,21 @@ const CarouselCards = ({ setSelectedBrand }: { setSelectedBrand: any }) => {
       <View style={styles.item}>
         <ParallaxImage
           source={{
-            uri: 'https://cdn.shopify.com/s/files/1/0655/1181/7473/files/watch_brands_in_Egypt_65a75eb2-60d4-408c-a2c6-94c37855fece_480x480.jpg',
+            uri: 'https://cdn4.beautinow.com/wp-content/uploads/2023/08/Most_Popular_Perfumes_0366584622ac4f4fa1abe0c937308f44.pngv=1691390378',
           }}
           containerStyle={styles.imageContainer}
           style={styles.image}
           parallaxFactor={0.4}
           {...parallaxProps}
         />
+        <View style={styles.overlay} />
         <Text style={styles.title} numberOfLines={2}>
           {item.brandName}
         </Text>
       </View>
     );
   };
+  
 
   return (
     <View>
@@ -94,5 +96,10 @@ const styles = StyleSheet.create({
   image: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: 'cover',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust opacity as needed
+    borderRadius: 10,
   },
 });

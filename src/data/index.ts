@@ -1,12 +1,12 @@
-import watchesData from './db.json';
+import perfumesData from './db.json';
 
-export type Watch = {
+export type Perfume = {
   id: string;
-  watchName: string;
+  perfumeName: string;
   price: number;
   description: string;
   brandName: string;
-  automatic: boolean;
+  isForFemale: boolean;
   image: string;
   feedbacks?: {
     rating: number;
@@ -17,33 +17,33 @@ export type Watch = {
   rating: number;
 };
 
-const brandData = watchesData
-  .map((watch) => {
-    return { brandName: watch.brandName };
+const brandData = perfumesData
+  .map((perfume) => {
+    return { brandName: perfume.brandName };
   })
   .filter((obj, index) => {
     return (
       index ===
-      watchesData.findIndex((watch) => obj.brandName === watch.brandName)
+      perfumesData.findIndex((perfume) => obj.brandName === perfume.brandName)
     );
   });
 export const brands = [{ brandName: 'All' }, ...brandData];
 
-export const watches: Watch[] = watchesData
-  .map((watch) => {
-    const totalRating = watch.feedbacks
-      ? watch.feedbacks?.reduce((sum, feedback) => sum + feedback.rating, 0)
+export const perfumes: Perfume[] = perfumesData
+  .map((perfume) => {
+    const totalRating = perfume.feedbacks
+      ? perfume.feedbacks?.reduce((sum, feedback) => sum + feedback.rating, 0)
       : 0;
-    const rating = watch.feedbacks?.length
-      ? totalRating / watch.feedbacks?.length
+    const rating = perfume.feedbacks?.length
+      ? totalRating / perfume.feedbacks?.length
       : 0;
-    return { ...watch, rating };
+    return { ...perfume, rating };
   })
   .sort((a, b) => b.rating - a.rating);
 
-export const getWatchDetail = (watchId: string) => {
-  const watch = watches.find((watch) => watch.id === watchId) as Watch;
-  if (watch?.feedbacks?.length)
-    watch.feedbacks = watch?.feedbacks?.sort((a, b) => b.rating - a.rating);
-  return watch;
+export const getPerfumeDetail = (perfumeId: string) => {
+  const perfume = perfumes.find((perfume) => perfume.id === perfumeId) as Perfume;
+  if (perfume?.feedbacks?.length)
+    perfume.feedbacks = perfume?.feedbacks?.sort((a, b) => b.rating - a.rating);
+  return perfume;
 };
