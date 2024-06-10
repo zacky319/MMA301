@@ -20,7 +20,6 @@ function CustomFlatList<T>({
     onLayoutTopListElement,
     onLayoutStickyElement,
   ] = useFlatListHook();
-
   return (
     <View style={style}>
       <Animated.View
@@ -54,9 +53,22 @@ function CustomFlatList<T>({
             useNativeDriver: true,
           }
         )}
+        onContentSizeChange={(width, height) => {
+          console.log('Content Size Change - Width:', width, 'Height:', height); // Log content size change
+        }}
+        onLayout={(event) => {
+          console.log('Layout Change:', event.nativeEvent.layout); // Log layout change
+        }}
+        onScrollBeginDrag={(event) => {
+          console.log('Scroll Begin Drag:', event.nativeEvent.contentOffset); // Log scroll begin drag event
+        }}
+        onScrollEndDrag={(event) => {
+          console.log('Scroll End Drag:', event.nativeEvent.contentOffset); // Log scroll end drag event
+        }}
       />
     </View>
   );
 }
+
 
 export default CustomFlatList;

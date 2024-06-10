@@ -19,14 +19,20 @@ const PerfumeCard = ({
   onPressFavorite: (item: Perfume) => any;
   onPressUnfavorite: (item: Perfume) => any;
 }) => {
+  const handlePressPerfumeCard = (perfumeId: string) => {
+    console.log('Perfume card pressed:', perfumeId);
+    onPressPerfumeCard(perfumeId);
+  };
+
   return (
     <TouchableOpacity
       key={item.id}
       onPress={() => {
-        onPressPerfumeCard(item.id);
+        handlePressPerfumeCard(item.id);
       }}
       style={styles.card}
     >
+      {}
       <View>
         <View style={styles.cardTop}>
           <Image
@@ -67,8 +73,8 @@ const PerfumeCard = ({
 
             {item.isForFemale && (
               <View style={styles.cardStatsItem}>
-                <FeatherIcon color="#48496c" name="zap" size={14} />
-                <Text style={styles.cardStatsItemText}>Automatic</Text>
+                <FeatherIcon color="#48496c" name="user" size={14} />
+                <Text style={styles.cardStatsItemText}>For Female</Text>
               </View>
             )}
           </View>
@@ -88,7 +94,6 @@ const PerfumeCard = ({
     </TouchableOpacity>
   );
 };
-
 export default PerfumeCard;
 
 const styles = StyleSheet.create({

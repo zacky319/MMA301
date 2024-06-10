@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Carousel, {
   Pagination,
   ParallaxImage,
@@ -7,13 +7,29 @@ import Carousel, {
 import { Dimensions } from 'react-native';
 import { Platform, Text } from 'react-native';
 
-import { brands } from '../data';
+// Import getBrands function from the data module
+import { getBrands } from '../data';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const CarouselCards = ({ setSelectedBrand }: { setSelectedBrand: any }) => {
   const isCarousel = React.useRef(null);
   const [index, setIndex] = React.useState(0);
+  const [brands, setBrands] = useState<{ brandName: string }[]>([]);
+
+  // Fetch brands data when the component mounts
+  useEffect(() => {
+    const fetchBrandsData = async () => {
+      try {
+        const brandsData = await getBrands();
+        setBrands(brandsData);
+      } catch (error) {
+        console.error('Error fetching brands:', error);
+      }
+    };
+
+    fetchBrandsData();
+  }, []);
 
   const _renderItem = (
     { item, index }: { item: any; index: number },
@@ -37,7 +53,6 @@ const CarouselCards = ({ setSelectedBrand }: { setSelectedBrand: any }) => {
       </View>
     );
   };
-  
 
   return (
     <View>

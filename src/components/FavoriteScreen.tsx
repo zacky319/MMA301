@@ -65,8 +65,8 @@ const Item = ({
             </View>
             {item.isForFemale && (
               <View style={styles.cardStatsItem}>
-                <FeatherIcon color="#48496c" name="zap" size={14} />
-                <Text style={styles.cardStatsItemText}>Automatic</Text>
+                <FeatherIcon color="#48496c" name="user" size={14} />
+                <Text style={styles.cardStatsItemText}>For Female</Text>
               </View>
             )}
           </View>
@@ -101,7 +101,6 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     });
 
   const onPressDelete = async () => {
-    console.log('Click Delete button');
 
     const updatedFavoritePerfumes = favoritePerfumes.filter(
       (perfume) => !selectedPerfumeIds.includes(perfume.id)
@@ -112,7 +111,6 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
   };
 
   const onPressCheckbox = (itemId: string) => {
-    console.log('Click Favorite card', itemId);
     if (selectedPerfumeIds.includes(itemId)) {
       setSelectedPerfumeIds(
         selectedPerfumeIds.filter((perfumeId) => perfumeId !== itemId)
@@ -125,7 +123,6 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
   useEffect(() => {
     (async () => {
       const data = await getItem('favorite');
-      console.log(data.length);
       setFavoritePerfumes(data);
     })();
   }, []);
@@ -134,7 +131,6 @@ export default function FavoriteScreen({ navigation }: { navigation: any }) {
     const unsubscribe = navigation.addListener('focus', async () => {
       setSelectedPerfumeIds([]);
       const data = await getItem('favorite');
-      console.log('Focus on Favorite', data.length);
       setFavoritePerfumes(data);
     });
 
